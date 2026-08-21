@@ -1,0 +1,16 @@
+# Ignorar carpetas de Visual Studio
+.vs/
+*.vsidx
+
+# Ignorar binarios y compilados
+bin/
+obj/
+
+# Ignorar paquetes y configuraciones locales
+*.user
+*.suo
+*.log
+*.tmp
+
+# Ignorar archivos de configuración de VS
+*.slnx
