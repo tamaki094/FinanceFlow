@@ -2,6 +2,7 @@
 {
     public record GastoResponseDto
     (
+        int ? id,
         string categoria_gasto,
         DateTime fecha_creacion,
         decimal monto,

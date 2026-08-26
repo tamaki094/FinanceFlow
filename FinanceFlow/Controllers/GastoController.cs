@@ -1,5 +1,8 @@
 ﻿using FinanceFlow.Dtos;
+using FinanceFlow.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceFlow.Controllers
 {
@@ -7,6 +10,15 @@ namespace FinanceFlow.Controllers
     [Route("api/[controller]")]
     public class GastoController : ControllerBase
     {
+        private readonly ILogger<GastoController> _logger;
+
+        public GastoController(IGastoService gastoService, ILogger<GastoController> logger)
+        {
+            this._gastoService = gastoService;
+            this._logger = logger;
+        }
+        private readonly IGastoService _gastoService;
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -16,9 +28,32 @@ namespace FinanceFlow.Controllers
         [HttpPost]
         public async Task<ActionResult<GastoResponseDto>> CrearGasto([FromBody] GastoRequestDto request)
         {
-            var nuevoGasto = request;
+            try
+            {
+                var nuevoGasto = request;
+                GastoResponseDto response = _gastoService.RegistrarGasto(nuevoGasto);
 
-            return new GastoResponseDto("ENTRETENIMIENTO", DateTime.Now, 100, "ps plus", 1, "tamaki", DateTime.Now);
+
+                _logger.LogInformation("Petición HTTP POST recibida en /api/gasto");
+                return CreatedAtAction(
+                    nameof(Index),
+                    new { id = response.id },
+                    response
+                );
+
+                //// o tambien...
+                //return StatusCode(StatusCodes.Status201Created, response);
+
+                //// o tambien
+                //return Created($"/api/gastos/{response.id}", response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "error en  en /api/gasto");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrio un error inesperado");
+            }
+        
+            
         }
     }
 }
