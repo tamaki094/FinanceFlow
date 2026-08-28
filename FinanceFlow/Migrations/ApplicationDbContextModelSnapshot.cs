@@ -3,8 +3,8 @@ using System;
 using FinanceFlow.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,9 +18,9 @@ namespace FinanceFlow.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.19")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FinanceFlow.Models.Categoria", b =>
                 {
@@ -29,21 +29,21 @@ namespace FinanceFlow.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("descripcion");
 
                     b.Property<bool>("EsGasto")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("es_gasto");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("nombre");
 
                     b.HasKey("Id");
@@ -61,7 +61,7 @@ namespace FinanceFlow.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<long>("CategoriaId")
                         .HasColumnType("bigint")
@@ -70,7 +70,7 @@ namespace FinanceFlow.Migrations
                     b.Property<string>("Concepto")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("concepto");
 
                     b.Property<DateTime>("Fecha")
@@ -101,10 +101,10 @@ namespace FinanceFlow.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("activo");
 
                     b.Property<DateTime>("FechaAsignacion")
@@ -116,7 +116,7 @@ namespace FinanceFlow.Migrations
                         .HasColumnName("monto");
 
                     b.Property<int?>("PresupuestoId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<long>("UsuarioId")
                         .HasColumnType("bigint")
@@ -135,15 +135,15 @@ namespace FinanceFlow.Migrations
                 {
                     b.Property<int>("PresupuestoId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("presupuesto_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PresupuestoId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PresupuestoId"));
 
                     b.Property<string>("MesAnio")
                         .IsRequired()
                         .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)")
+                        .HasColumnType("character varying(7)")
                         .HasColumnName("mes_anio");
 
                     b.Property<decimal>("MontoAhorro")
@@ -187,50 +187,50 @@ namespace FinanceFlow.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("email");
 
                     b.Property<bool?>("EmailVerificado")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("email_verificado");
 
                     b.Property<bool?>("EstatusActivo")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("estatus_activo");
 
                     b.Property<DateTime?>("FechaRegistro")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("fecha_registro");
 
                     b.Property<string>("FotoUrl")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("foto_url");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("nombre");
 
                     b.Property<string>("Proveedor")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("proveedor");
 
                     b.Property<string>("Telefono")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("telefono");
 
                     b.Property<string>("Uid")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("uid");
 
                     b.HasKey("Id");

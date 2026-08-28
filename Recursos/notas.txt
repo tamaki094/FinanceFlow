@@ -1,0 +1,74 @@
+Pasar la variable al desplegar con gcloud (Recomendada)
+Cuando ejecutemos el comando de despliegue en la CLI de Google Cloud (gcloud run deploy), solo añadimos la bandera --set-env-vars:
+
+gcloud run deploy finance-flow-api `
+  --image gcr.io/planificadorgastos/finance-flow-api `
+  --platform managed `
+  --region us-central1 `
+  --set-env-vars "ASPNETCORE_ENVIRONMENT=Production" `
+  --allow-unauthenticated
+
+
+
+🚀 Pasos siguientes para dejar la API en Cloud Run 
+Ya tenemos la terminal configurada, Docker listo en tu máquina y tu proyecto de GCP seleccionado.
+
+Cuando estés listo para subir tu backend en ASP.NET Core, únicamente ejecutaremos estos dos comandos directos desde tu terminal en la carpeta de tu solución .NET:
+
+1. Enviar el código a construir en la nube con Google Cloud Build:
+
+
+gcloud builds submit --tag gcr.io/planificadorgastos/finance-flow-api
+
+2. Desplegar el contenedor en Cloud Run (Serverless con costo $0.00):
+
+gcloud run deploy finance-flow-api `
+  --image gcr.io/planificadorgastos/finance-flow-api `
+  --platform managed `
+  --region us-central1 `
+  --allow-unauthenticated
+
+Una vez ejecutados, Google te arrojará la URL pública HTTPS de tu API en vivo (ej. [https://finance-flow-api-xyz.a.run.app](https://finance-flow-api-xyz.a.run.app)) para consumirla desde Angular o Postman.
+
+Paso 1: Crear el archivo Dockerfile (Solo copiar y pegar)
+En la carpeta raíz de tu proyecto de C# (donde está tu archivo .csproj), crea un archivo llamado simplemente Dockerfile (sin extensión .txt) y pégale este código:
+
+Dockerfile
+# 1. Imagen base de SDK de .NET para compilar
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY ["FinanceFlow.csproj", "./"]
+RUN dotnet restore "FinanceFlow.csproj"
+COPY . .
+RUN dotnet publish "FinanceFlow.csproj" -c Release -o /app/publish
+
+# 2. Imagen ligera de runtime para ejecutar la API
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Cloud Run le pasa el puerto dinámicamente
+ENV PORT=8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "FinanceFlow.dll"]
+Paso 2: Habilitar los servicios en Google Cloud (Solo se ejecuta 1 vez)
+Desde tu terminal de PowerShell donde ya tienes autenticado gcloud en el proyecto planificadorgastos, ejecuta esto para encender Cloud Build y Cloud Run:
+
+PowerShell
+gcloud services enable cloudbuild.googleapis.com run.googleapis.com
+
+
+Paso 3: Mandar a construir y desplegar la API
+En esa misma terminal de PowerShell, parado dentro de la carpeta del proyecto, ejecuta los dos comandos clave:
+
+Enviar tu código a compilar en el contenedor de Google:
+
+PowerShell
+gcloud builds submit --tag gcr.io/planificadorgastos/finance-flow-api
+
+
+Desplegar el contenedor en Cloud Run (Serverless, costo $0.00):
+
+PowerShell
+gcloud run deploy finance-flow-api --image gcr.io/planificadorgastos/finance-flow-a

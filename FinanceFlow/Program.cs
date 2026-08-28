@@ -1,26 +1,33 @@
+using Microsoft.EntityFrameworkCore;
 using FinanceFlow.Data;
 using FinanceFlow.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Servicios del contenedor
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Base de Datos SQLServer
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
+// Base de Datos PostgreSQL (Docker local / Supabase)
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Inyección de dependencias
 builder.Services.AddScoped<IGastoService, GastoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// CORS para Angular
 builder.Services.AddCors(options =>
-    options.AddPolicy("AllowAngular",
-        policy => policy.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod())
-    );
+    options.AddPolicy("AllowAngular", policy =>
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod())
+);
 
 var app = builder.Build();
 
@@ -35,4 +42,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
