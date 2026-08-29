@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinanceFlow.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260828084920_InicialPostgres")]
-    partial class InicialPostgres
+    [Migration("20260829061237_MigracionInicial")]
+    partial class MigracionInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
