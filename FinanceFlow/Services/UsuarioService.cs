@@ -36,5 +36,12 @@ namespace FinanceFlow.Services
             return true;
 
         }
+
+        public UsuarioResponseDto? BuscarUsuario(string usuarioId)
+        {
+            var usuario = _context.Usuarios.FirstOrDefault(w => w.Uid == usuarioId);
+
+            return UsuarioMapper.toUsuarioDTO(usuario);
+        }
     }
 }

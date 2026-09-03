@@ -25,5 +25,27 @@ namespace FinanceFlow.Mappers
                 Id = idParsed
             };
         }
+
+        public static UsuarioResponseDto? toUsuarioDTO(Usuario? usuario)
+        {  
+            if(usuario == null)
+            {
+                return null;
+            }
+            return new UsuarioResponseDto(
+            id: usuario.Id,
+            uid: usuario.Uid ?? "",
+            nombre: usuario.Nombre,
+            telefono: usuario.Telefono,
+            email_verificado: usuario.EmailVerificado ?? false,
+            proveedor: usuario.Proveedor ?? "",
+            fecha_creacion: usuario.FechaRegistro ?? DateTime.Now,
+            ultimo_login: null,
+            estatus_activo: usuario.EstatusActivo ?? false,
+            fecha_actualizacion: null,
+            foto_url: usuario.FotoUrl ?? "");
+            
+            
+        }
     }
 }

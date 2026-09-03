@@ -11,13 +11,14 @@ namespace FinanceFlow.Controllers
     public class GastoController : ControllerBase
     {
         private readonly ILogger<GastoController> _logger;
+        private readonly IGastoService _gastoService;
+
 
         public GastoController(IGastoService gastoService, ILogger<GastoController> logger)
         {
             this._gastoService = gastoService;
             this._logger = logger;
         }
-        private readonly IGastoService _gastoService;
 
         [HttpGet]
         public IActionResult Index()

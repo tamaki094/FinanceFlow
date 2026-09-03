@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Inyección de dependencias
 builder.Services.AddScoped<IGastoService, GastoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISueldoService, SueldoService>();
 
 // CORS para Angular
 builder.Services.AddCors(options =>

@@ -2,7 +2,7 @@
 {
     public record UsuarioResponseDto
     (
-        string? id,
+        long? id,
         string uid,
         string nombre,
         string foto_url,
