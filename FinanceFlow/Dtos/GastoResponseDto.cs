@@ -2,14 +2,14 @@
 {
     public record GastoResponseDto
     (
-        int ? id,
+        long? idGasto,
         string categoria_gasto,
         DateTime fecha_creacion,
         decimal monto,
         string name,
-        int tipo_gasto,
+        long tipo_gasto,
         string usuario,
-        DateTime fecha_actualizacion,
+        DateTime? fecha_actualizacion,
         DateTime? fecha_vencimiento = null,
         DateTime? fecha_recordatorio = null
     );

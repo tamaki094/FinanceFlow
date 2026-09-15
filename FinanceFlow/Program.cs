@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 // Base de Datos SQLServer
 /*builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IGastoService, GastoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ISueldoService, SueldoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 // CORS para Angular
 builder.Services.AddCors(options =>

@@ -29,39 +29,49 @@ namespace FinanceFlow.Controllers
         [HttpGet]
         public async Task<ActionResult<HATEOASresponse<List<SueldoPresupuesto>>>> ConsultarSueldoPorId([FromQuery]string usuarioId)
         {
-            var usuario = _usuarioService.BuscarUsuario(usuarioId);
-            if (usuario == null)
+            try
             {
-                return NotFound($"No se encontro el usuario con UID {usuarioId}");
-            }
+                var usuario = _usuarioService.BuscarUsuario(usuarioId);
 
-            var sueldos = _service.BuscarSueldoPorId(usuario.id ?? 0);
-
-            var links = new List<LinkDto>
-            {
-                new LinkDto
+                if (usuario == null)
                 {
-                    Rel = "self",
-                    Href = Url.Action(nameof(ConsultarSueldoPorId), new { usuarioId }),
-                    Method = "GET"
-                },
-                new LinkDto
-                {
-                    Rel = "insert",
-                    Href = Url.Action(nameof(ActualizarSueldo)),
-                    Method = "POST"
+                    return NotFound($"No se encontro el usuario con UID {usuarioId}");
                 }
-            };
 
-            var hateoasResponse = new HATEOASresponse<List<SueldoResponseDto>>(sueldos, links);
+                var sueldos = _service.BuscarSueldoPorId(usuario.id ?? 0);
 
-            _logger.LogInformation(
-                    LogTemplates.JsonResponse,
-                    HttpContext.Request.Path,
-                    HttpContext.Request.Method,
-                    usuarioId);
+                var links = new List<LinkDto>
+                {
+                    new LinkDto
+                    {
+                        Rel = "self",
+                        Href = Url.Action(nameof(ConsultarSueldoPorId), new { usuarioId }),
+                        Method = "GET"
+                    },
+                    new LinkDto
+                    {
+                        Rel = "insert",
+                        Href = Url.Action(nameof(ActualizarSueldo)),
+                        Method = "POST"
+                    }
+                };
 
-            return Ok(hateoasResponse);
+                    var hateoasResponse = new HATEOASresponse<List<SueldoResponseDto>>(sueldos, links);
+
+                    _logger.LogInformation(
+                            LogTemplates.JsonResponse,
+                            HttpContext.Request.Path,
+                            HttpContext.Request.Method,
+                            usuarioId);
+
+                    return Ok(hateoasResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"error en {nameof(ConsultarSueldoPorId)}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrio un error");
+            }
+            
         }
 
         [HttpPost]
@@ -112,7 +122,7 @@ namespace FinanceFlow.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "error en /api/sueldo");
+                _logger.LogError(ex, $"error en {nameof(ConsultarSueldoPorId)}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrio un error");
             }
 
