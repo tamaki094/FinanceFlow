@@ -2,6 +2,7 @@
 using Azure.Core;
 using FinanceFlow.Dtos;
 using FinanceFlow.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ namespace FinanceFlow.Controllers
             this._usuarioService = usuarioService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<HATEOASresponse<List<GastoResponseDto>>>> ConsultarGastosPorUsuario([FromQuery] string usuarioId)
         {
@@ -51,7 +53,7 @@ namespace FinanceFlow.Controllers
             return Ok(hateoasResponse);
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<HATEOASresponse<GastoResponseDto>>> CrearGasto([FromBody] GastoRequestDto request)
         {

@@ -2,6 +2,11 @@
 using FinanceFlow.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace FinanceFlow.Controllers
 {
@@ -12,11 +17,13 @@ namespace FinanceFlow.Controllers
 
         private readonly ILogger<UsuarioController> _logger;
         private readonly IUsuarioService _service;
+        private readonly IAuthService _authService;
 
-        public UsuarioController(IUsuarioService service, ILogger<UsuarioController> logger)
+        public UsuarioController(IUsuarioService service, ILogger<UsuarioController> logger, IAuthService authService)
         {
             this._service = service;
             this._logger = logger;
+            this._authService = authService;
         }
 
         [HttpGet]
@@ -32,11 +39,17 @@ namespace FinanceFlow.Controllers
             {
                 var response = _service.ActualizarUsuario(usuarioDto);
 
-                return StatusCode(StatusCodes.Status201Created, response);
+                if (response)
+                {
+                    var token = _authService.GenerarToken(usuarioDto.uid);
+                    return StatusCode(StatusCodes.Status201Created, new {usuario = usuarioDto.uid, token = token});
+                }
+
+                return NotFound("Usuario no existe");
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, $"error en {nameof(ActualizarUsuario)}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocurrio un error inesperado");
             }
         }
